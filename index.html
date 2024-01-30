@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="style.css">
+    <title>Currency Convertor</title>
+    <style>
+        html,
+body{
+   font-family: 'Poppins', sans-serif;
+   background-color:#f5e8ba;
+   margin: 0;
+   padding: 0;
+   box-sizing: border-box;
+}
+  
+  body{
+    height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  
+  .container{
+    background-color:#1f2029;
+    padding: 10px 24px;
+    border-radius: 20px;
+    width: 490px;
+  }
+  
+  h1{
+    color:#ffeba7;
+    text-align: center;
+    margin-bottom: 0.5em;
+    font-family: sans-serif;
+  }
+  .container .box{
+    width: 100%;
+    display: flex;
+  }
+  .box div{
+    width: 100%;
+  }
+  
+  select{
+    width: 95%;
+    height: 40px;
+    font-size: 1.2em;
+    cursor: pointer;
+    background-color:coral;
+    outline: none;
+    color: black;
+    margin: 0.2em 0;
+    padding: 0 1em;
+    border-radius: 10px;
+    border: none;
+  }
+  
+  
+  input{
+    width: 80%;
+    height: 40px;
+    font-size: 1em;
+    margin: 0.2em 0;
+    border-radius: 10px;
+    border: none;
+    background: #cccccc;
+    outline: none;
+    padding: 0 1em;
+  }
+  
+  .btn{
+    display:flex;
+    justify-content: center;
+  }
+  
+  button{
+    width: 50%;
+    height: 40px;
+    background-color:#ffeba7;
+    color: #102770;
+    border-radius: 10px;
+    border: none;
+    cursor: pointer;
+    font-size: 1em;
+    margin: 0.5em 0;
+  
+  }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Currency Convertor</h1>
+        <div class="box">
+            <div class="left-box">
+                <select name="currency" class="currency1" tabindex="1">
+                </select>
+                <input type="number" name=""  id="input" tabindex="3">
+            </div>
+            <div class="right-box">
+                <select name="currency" class="currency2" tabindex="2">
+
+
+                </select>
+                <input type="number" name="" id="result" tabindex="4">
+            </div>
+        </div>
+        <div class="btn">
+            <button id="btn" tabindex="5">Convert</button>
+        </div>
+        
+    </div>
+    <script>
+
+
+let curencycls1 = document.querySelectorAll(".currency1")[0];
+let curencycls2 = document.querySelectorAll(".currency2")[0];
+let inputvalue= document.getElementById("input");
+let btn = document.querySelector("#btn");
+
+
+fetch('https://api.frankfurter.app/currencies')
+.then((res=>res.json()))
+.then((res=>dropdownfun(res)))
+
+
+function dropdownfun(response){
+
+    let singleValueCurrency = Object.entries(response)
+    
+    for(let i=0;i<singleValueCurrency.length; i++){
+        
+        curencycls1.innerHTML +=`<option value="${singleValueCurrency[i][0]}">${singleValueCurrency[i][0]}</option>`;
+        curencycls2.innerHTML +=`<option value="${singleValueCurrency[i][0]}">${singleValueCurrency[i][0]}</option>`;
+
+    }
+}
+
+btn.addEventListener("click",()=>{
+    
+    let firstInputValue = curencycls1.value;
+    let secondInputValue = curencycls2.value;
+    let enterValue = inputvalue.value;
+    // console.log(firstInputValue)
+
+    // console.log(secondInputValue)
+
+    if(firstInputValue===secondInputValue){
+     alert("same same dupula")  
+    }
+    else{
+        callapi(firstInputValue,secondInputValue,enterValue)
+       
+    }
+
+})
+
+function callapi(firstInputValue,secondInputValue,enterValue){
+    const host = 'api.frankfurter.app';
+fetch(`https://${host}/latest?amount=${enterValue}&from=${firstInputValue}&to=${secondInputValue}`)
+.then(resp => resp.json())
+  .then((data) => {
+    // console.log(Object.entries(data.rates)[0][1]) same out 
+    console.log(Object.values(data.rates)[0])
+    document.getElementById('result').value = Object.values(data.rates)[0]
+});
+
+}
+
+
+    </script>
+</body>
+</html>
